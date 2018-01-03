@@ -1,5 +1,5 @@
 {
-    "name": "reno-shelter/laravel-apispec-generator",
+    "name": "kotamat/laravel-apispec-generator",
     "description": "RestAPI spec generator with Laravel test",
     "type": "library",
     "license": "MIT",
