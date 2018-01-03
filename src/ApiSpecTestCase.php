@@ -13,9 +13,11 @@ abstract class ApiSpecTestCase extends TestCase
         $res = parent::postJson($uri, $data, $headers);
 
         if ($this->isExportSpec) {
-            (new ApiSpecObject())->setMethod('POST')
+            (new ApiSpecObject())->setApp($this->app)
+                ->setMethod('POST')
                 ->setUri($uri)
                 ->setData($data)
+                ->setHeaders(['Content-Type' => 'application/json', 'Accept' => 'application/json'])
                 ->setHeaders($headers)
                 ->setResponse($res)
                 ->setIsAuthenticated($this->isAuthenticated())
@@ -30,8 +32,10 @@ abstract class ApiSpecTestCase extends TestCase
         $res = parent::getJson($uri, $headers);
 
         if ($this->isExportSpec) {
-            (new ApiSpecObject())->setMethod('GET')
+            (new ApiSpecObject())->setApp($this->app)
+                ->setMethod('GET')
                 ->setUri($uri)
+                ->setHeaders(['Content-Type' => 'application/json', 'Accept' => 'application/json'])
                 ->setHeaders($headers)
                 ->setResponse($res)
                 ->setIsAuthenticated($this->isAuthenticated())
@@ -46,9 +50,11 @@ abstract class ApiSpecTestCase extends TestCase
         $res = parent::putJson($uri, $data, $headers);
 
         if ($this->isExportSpec) {
-            (new ApiSpecObject())->setMethod('PUT')
+            (new ApiSpecObject())->setApp($this->app)
+                ->setMethod('PUT')
                 ->setUri($uri)
                 ->setData($data)
+                ->setHeaders(['Content-Type' => 'application/json', 'Accept' => 'application/json'])
                 ->setHeaders($headers)
                 ->setResponse($res)
                 ->setIsAuthenticated($this->isAuthenticated())
@@ -63,9 +69,11 @@ abstract class ApiSpecTestCase extends TestCase
         $res = parent::delete($uri, $data, $headers);
 
         if ($this->isExportSpec) {
-            (new ApiSpecObject())->setMethod('DELETE')
+            (new ApiSpecObject())->setApp($this->app)
+                ->setMethod('DELETE')
                 ->setUri($uri)
                 ->setData($data)
+                ->setHeaders(['Content-Type' => 'application/json', 'Accept' => 'application/json'])
                 ->setHeaders($headers)
                 ->setResponse($res)
                 ->setIsAuthenticated($this->isAuthenticated())

@@ -2,6 +2,7 @@
 
 namespace ApiSpec;
 
+use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Testing\TestResponse;
 
 /**
@@ -11,6 +12,7 @@ use Illuminate\Foundation\Testing\TestResponse;
  * @property TestResponse response
  * @property array        data
  * @property bool         isAuthenticated
+ * @property Application  app
  */
 class ApiSpecObject
 {
@@ -20,6 +22,7 @@ class ApiSpecObject
     protected $response = null;
     protected $data = [];
     protected $isAuthenticated = false;
+    protected $app;
 
     public function output()
     {
@@ -100,7 +103,7 @@ class ApiSpecObject
      */
     public function setHeaders(array $headers): ApiSpecObject
     {
-        $this->headers = $headers;
+        $this->headers = array_merge($this->headers, $headers);
 
         return $this;
     }
@@ -137,6 +140,13 @@ class ApiSpecObject
     public function setIsAuthenticated(bool $isAuthenticated): ApiSpecObject
     {
         $this->isAuthenticated = $isAuthenticated;
+
+        return $this;
+    }
+
+    public function setApp(Application $app)
+    {
+        $this->app = $app;
 
         return $this;
     }
