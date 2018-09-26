@@ -16,12 +16,12 @@ use Illuminate\Foundation\Testing\TestResponse;
  */
 class ApiSpecObject
 {
-    protected $method = [];
-    protected $uri = [];
-    protected $headers = [];
-    protected $response = null;
-    protected $data = [];
-    protected $isAuthenticated = false;
+    protected $method    = [];
+    protected $uri       = [];
+    protected $headers   = [];
+    protected $response  = null;
+    protected $data      = [];
+    protected $loginUser = null;
     protected $app;
 
     public function output()
@@ -41,16 +41,21 @@ class ApiSpecObject
         foreach ($this->headers as $key => $value) {
             $content .= "$key: $value" . PHP_EOL;
         }
-        if ($this->isAuthenticated) {
+        if ($this->loginUser) {
             // TODO select token protocol
-            $content .= "Authorization: Bearer " . PHP_EOL;
+            $content .= "Authorization: Bearer ";
+            if (method_exists($this->loginUser, 'createToken')) {
+                $token   = $this->loginUser->createToken('test token');
+                $content .= $token->accessToken ?? '';
+            }
+            $content .= PHP_EOL;
         }
 
         $content .= PHP_EOL;
 
         // Content
         if (!empty($this->data)) {
-            $param = \json_encode($this->data, JSON_PRETTY_PRINT);
+            $param   = \json_encode($this->data, JSON_PRETTY_PRINT);
             $content .= $param . PHP_EOL;
         }
 
@@ -132,14 +137,9 @@ class ApiSpecObject
         return $this;
     }
 
-    /**
-     * @param bool $isAuthenticated
-     *
-     * @return ApiSpecObject
-     */
-    public function setIsAuthenticated(bool $isAuthenticated): ApiSpecObject
+    public function setAuthenticatedUser($loginUser): ApiSpecObject
     {
-        $this->isAuthenticated = $isAuthenticated;
+        $this->loginUser = $loginUser;
 
         return $this;
     }
