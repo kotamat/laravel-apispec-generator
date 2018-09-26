@@ -41,13 +41,13 @@ EOS;
             ->setData(['name' => 'hoge'])
             ->setHeaders(['Accept' => 'application/json'])
             ->setResponse(new TestResponse(new Response(['name' => 'huga'])))
-            ->setIsAuthenticated(true)
+            ->setAuthenticatedUser(new MockUser())
             ->generateContent();
 
         $expected = <<< EOS
 POST http://hoge.com/user/
 Accept: application/json
-Authorization: Bearer 
+Authorization: Bearer token
 
 {
     "name": "hoge"

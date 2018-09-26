@@ -2,6 +2,7 @@
 
 namespace ApiSpec;
 
+use Illuminate\Contracts\Auth\Authenticatable as UserContract;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Testing\TestResponse;
 
@@ -11,17 +12,17 @@ use Illuminate\Foundation\Testing\TestResponse;
  * @property array        headers
  * @property TestResponse response
  * @property array        data
- * @property bool         isAuthenticated
+ * @property UserContract $user
  * @property Application  app
  */
 class ApiSpecObject
 {
-    protected $method = [];
-    protected $uri = [];
-    protected $headers = [];
-    protected $response = null;
-    protected $data = [];
-    protected $isAuthenticated = false;
+    protected $method            = [];
+    protected $uri               = [];
+    protected $headers           = [];
+    protected $response          = null;
+    protected $data              = [];
+    protected $authenticatedUser = null;
     protected $app;
 
     public function output()
@@ -41,16 +42,21 @@ class ApiSpecObject
         foreach ($this->headers as $key => $value) {
             $content .= "$key: $value" . PHP_EOL;
         }
-        if ($this->isAuthenticated) {
+        if ($this->authenticatedUser) {
             // TODO select token protocol
-            $content .= "Authorization: Bearer " . PHP_EOL;
+            $content .= "Authorization: Bearer ";
+            if (method_exists($this->authenticatedUser, 'createToken')) {
+                $token   = $this->authenticatedUser->createToken('test token');
+                $content .= $token->accessToken ?? '';
+            }
+            $content .= PHP_EOL;
         }
 
         $content .= PHP_EOL;
 
         // Content
         if (!empty($this->data)) {
-            $param = \json_encode($this->data, JSON_PRETTY_PRINT);
+            $param   = \json_encode($this->data, JSON_PRETTY_PRINT);
             $content .= $param . PHP_EOL;
         }
 
@@ -132,14 +138,9 @@ class ApiSpecObject
         return $this;
     }
 
-    /**
-     * @param bool $isAuthenticated
-     *
-     * @return ApiSpecObject
-     */
-    public function setIsAuthenticated(bool $isAuthenticated): ApiSpecObject
+    public function setAuthenticatedUser($authenticatedUser): ApiSpecObject
     {
-        $this->isAuthenticated = $isAuthenticated;
+        $this->authenticatedUser = $authenticatedUser;
 
         return $this;
     }

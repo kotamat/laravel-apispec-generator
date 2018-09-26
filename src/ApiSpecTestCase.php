@@ -2,11 +2,23 @@
 
 namespace ApiSpec;
 
+use Illuminate\Contracts\Auth\Authenticatable as UserContract;
 use Illuminate\Foundation\Testing\TestCase;
 
 abstract class ApiSpecTestCase extends TestCase
 {
     protected $isExportSpec = false;
+    protected $__authenticatedUser = null;
+
+    /**
+     * @param UserContract $user
+     * @param null         $driver
+     */
+    public function be(UserContract $user, $driver = null)
+    {
+        parent::be(...func_get_args());
+        $this->__authenticatedUser = $user;
+    }
 
     public function postJson($uri, array $data = [], array $headers = [])
     {
@@ -20,7 +32,7 @@ abstract class ApiSpecTestCase extends TestCase
                 ->setHeaders(['Content-Type' => 'application/json', 'Accept' => 'application/json'])
                 ->setHeaders($headers)
                 ->setResponse($res)
-                ->setIsAuthenticated($this->isAuthenticated())
+                ->setAuthenticatedUser($this->__authenticatedUser)
                 ->output();
         }
 
@@ -38,7 +50,7 @@ abstract class ApiSpecTestCase extends TestCase
                 ->setHeaders(['Content-Type' => 'application/json', 'Accept' => 'application/json'])
                 ->setHeaders($headers)
                 ->setResponse($res)
-                ->setIsAuthenticated($this->isAuthenticated())
+                ->setAuthenticatedUser($this->__authenticatedUser)
                 ->output();
         }
 
@@ -57,7 +69,7 @@ abstract class ApiSpecTestCase extends TestCase
                 ->setHeaders(['Content-Type' => 'application/json', 'Accept' => 'application/json'])
                 ->setHeaders($headers)
                 ->setResponse($res)
-                ->setIsAuthenticated($this->isAuthenticated())
+                ->setAuthenticatedUser($this->__authenticatedUser)
                 ->output();
         }
 
@@ -76,7 +88,7 @@ abstract class ApiSpecTestCase extends TestCase
                 ->setHeaders(['Content-Type' => 'application/json', 'Accept' => 'application/json'])
                 ->setHeaders($headers)
                 ->setResponse($res)
-                ->setIsAuthenticated($this->isAuthenticated())
+                ->setAuthenticatedUser($this->__authenticatedUser)
                 ->output();
         }
 
