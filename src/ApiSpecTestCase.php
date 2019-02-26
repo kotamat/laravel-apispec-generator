@@ -78,7 +78,7 @@ abstract class ApiSpecTestCase extends TestCase
 
     public function deleteJson($uri, array $data = [], array $headers = [])
     {
-        $res = parent::delete($uri, $data, $headers);
+        $res = parent::deleteJson($uri, $data, $headers);
 
         if ($this->isExportSpec) {
             (new ApiSpecObject())->setApp($this->app)

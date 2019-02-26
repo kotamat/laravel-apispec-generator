@@ -70,6 +70,8 @@ class ApiSpecTestCaseTest extends ApiSpecTestCase
         $methodName = strtoupper(str_replace('Json', '', $method));
 
         $this->{$method}($url);
+
+        // output file correspondented to url structure
         $this->assertEquals($expectedFilename, $this->acceptor->filename);
         $expectedStr = <<< EOS
 $methodName $url
@@ -82,6 +84,7 @@ Accept: application/json
 #    "rank": "foo"
 #}
 EOS;
+        // .http str
         $this->assertEquals($expectedStr, $this->acceptor->str);
 
     }
@@ -108,7 +111,12 @@ EOS;
                 'putJson',
                 'foo/bar',
                 'foo/bar/PUT.http'
-            ]
+            ],
+            [
+                'deleteJson',
+                'jazz/rock/progressive',
+                'jazz/rock/progressive/DELETE.http'
+            ],
         ];
     }
 }
