@@ -2,8 +2,11 @@
 namespace ApiSpec;
 
 use Illuminate\Contracts\Auth\Authenticatable as UserContract;
-use Illuminate\Foundation\Testing\TestCase;
+use Illuminate\Foundation\Testing\TestResponse;
 
+/**
+ * trait to output APISpec 
+ */
 trait ApiSpecOutput
 {
     protected $isExportSpec = false;
@@ -23,17 +26,7 @@ trait ApiSpecOutput
     {
         $res = parent::postJson($uri, $data, $headers);
 
-        if ($this->isExportSpec) {
-            (new ApiSpecObject())->setApp($this->app)
-                ->setMethod('POST')
-                ->setUri($uri)
-                ->setData($data)
-                ->setHeaders(['Content-Type' => 'application/json', 'Accept' => 'application/json'])
-                ->setHeaders($headers)
-                ->setResponse($res)
-                ->setAuthenticatedUser($this->__authenticatedUser)
-                ->output();
-        }
+        $this->outputSpec($uri, $data, $headers, $res, 'POST');
 
         return $res;
     }
@@ -42,16 +35,7 @@ trait ApiSpecOutput
     {
         $res = parent::getJson($uri, $headers);
 
-        if ($this->isExportSpec) {
-            (new ApiSpecObject())->setApp($this->app)
-                ->setMethod('GET')
-                ->setUri($uri)
-                ->setHeaders(['Content-Type' => 'application/json', 'Accept' => 'application/json'])
-                ->setHeaders($headers)
-                ->setResponse($res)
-                ->setAuthenticatedUser($this->__authenticatedUser)
-                ->output();
-        }
+        $this->outputSpec($uri, [], $headers, $res, 'GET');
 
         return $res;
     }
@@ -60,17 +44,7 @@ trait ApiSpecOutput
     {
         $res = parent::putJson($uri, $data, $headers);
 
-        if ($this->isExportSpec) {
-            (new ApiSpecObject())->setApp($this->app)
-                ->setMethod('PUT')
-                ->setUri($uri)
-                ->setData($data)
-                ->setHeaders(['Content-Type' => 'application/json', 'Accept' => 'application/json'])
-                ->setHeaders($headers)
-                ->setResponse($res)
-                ->setAuthenticatedUser($this->__authenticatedUser)
-                ->output();
-        }
+        $this->outputSpec($uri, $data, $headers, $res, 'PUT');
 
         return $res;
     }
@@ -79,18 +53,47 @@ trait ApiSpecOutput
     {
         $res = parent::deleteJson($uri, $data, $headers);
 
+        $this->outputSpec($uri, $data, $headers, $res, 'DELETE');
+
+        return $res;
+    }
+
+    public function patchJson($uri, array $data = [], array $headers = [])
+    {
+        $res = parent::patchJson($uri, $data, $headers);
+
+        $this->outputSpec($uri, $data, $headers, $res, 'PATCH');
+
+        return $res;
+    }
+
+    /**
+     * output spec file.
+     *
+     * @param string       $uri      request uri
+     * @param array        $data     request body
+     * @param array        $headers  request headers
+     * @param TestResponse $response response object
+     * @param string       $method   method name
+     * @return void
+     */
+    protected function outputSpec(
+        $uri,
+        array $data = [],
+        array $headers = [],
+        TestResponse $response,
+        string $method
+    ) {
         if ($this->isExportSpec) {
             (new ApiSpecObject())->setApp($this->app)
-                ->setMethod('DELETE')
+                ->setMethod($method)
                 ->setUri($uri)
                 ->setData($data)
                 ->setHeaders(['Content-Type' => 'application/json', 'Accept' => 'application/json'])
                 ->setHeaders($headers)
-                ->setResponse($res)
+                ->setResponse($response)
                 ->setAuthenticatedUser($this->__authenticatedUser)
                 ->output();
         }
-
-        return $res;
     }
 }

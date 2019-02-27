@@ -17,6 +17,26 @@ class SomeTestCase extends ApiSpecTestCase
 {
 ```
 
+or 
+
+```diff
++use ApiSpec\ApiSpecOutput;
+
+class SomeTestCase extends TestCase
+{
++    use ApiSpecOutput;
+
+    //...
+
+    public function testSomething()
+    {
++       $this->$isExportSpec = true;
+        $this->getJson('/someone/status');
+    }
+}
+
+```
+
 ## Output
 
 The output format is recognized on several IDE.

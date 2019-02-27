@@ -117,6 +117,11 @@ EOS;
                 'jazz/rock/progressive',
                 'jazz/rock/progressive/DELETE.http'
             ],
+            [
+                'patchJson',
+                'person/bob',
+                'person/bob/PATCH.http'
+            ]
         ];
     }
 }
