@@ -4,7 +4,7 @@ namespace ApiSpec;
 
 use Illuminate\Contracts\Auth\Authenticatable as UserContract;
 use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Testing\TestResponse;
+use Illuminate\Testing\TestResponse;
 
 /**
  * @property string       method
@@ -65,7 +65,8 @@ class ApiSpecObject
         $content .= mb_ereg_replace(
             PHP_EOL,
             PHP_EOL . '#',
-            \json_encode($this->response->json(), JSON_PRETTY_PRINT));
+            \json_encode($this->response->json(), JSON_PRETTY_PRINT)
+        );
 
         return $content;
     }

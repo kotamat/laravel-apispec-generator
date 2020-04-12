@@ -2,10 +2,10 @@
 namespace ApiSpec;
 
 use Illuminate\Contracts\Auth\Authenticatable as UserContract;
-use Illuminate\Foundation\Testing\TestResponse;
+use Illuminate\Testing\TestResponse;
 
 /**
- * trait to output APISpec 
+ * trait to output APISpec
  */
 trait ApiSpecOutput
 {
