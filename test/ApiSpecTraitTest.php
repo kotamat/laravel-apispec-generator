@@ -3,7 +3,7 @@
 namespace Test\ApiSpec;
 
 use ApiSpec\ApiSpecObject;
-use Illuminate\Foundation\Testing\TestResponse;
+use Illuminate\Testing\TestResponse;
 use Illuminate\Http\Response;
 use PHPUnit\Framework\TestCase;
 
@@ -60,5 +60,4 @@ EOS;
 
         $this->assertEquals($expected, $content);
     }
-
 }

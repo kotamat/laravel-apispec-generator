@@ -1,11 +1,10 @@
 <?php
 namespace Test\ApiSpec;
 
-use Illuminate\Routing\Router;
 use Illuminate\Foundation\Application;
 use ApiSpec\ApiSpecTestCase;
 use Illuminate\Foundation\Testing\Concerns\MocksApplicationServices;
-use Illuminate\Foundation\Testing\TestResponse;
+use Illuminate\Testing\TestResponse;
 use Illuminate\Http\Response;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Mockery as m;
@@ -15,7 +14,6 @@ use Mockery as m;
  */
 class ApiSpecTestCaseTest extends ApiSpecTestCase
 {
-
     use MocksApplicationServices;
 
     private $acceptor;
@@ -35,7 +33,8 @@ class ApiSpecTestCaseTest extends ApiSpecTestCase
                 $this->acceptor = $acceptor;
             }
 
-            public function make($class, array $param = []) {
+            public function make($class, array $param = [])
+            {
                 $mock = m::mock(FilesystemAdapter::class);
                 $mock->shouldReceive('drive')->andReturn($this->acceptor);
                 return $mock;
@@ -47,12 +46,13 @@ class ApiSpecTestCaseTest extends ApiSpecTestCase
         $this->app = $app;
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->acceptor = new class {
             public $filename;
             public $str;
-            public function put($filename, $str) {
+            public function put($filename, $str)
+            {
                 $this->filename = $filename;
                 $this->str = $str;
             }
@@ -86,7 +86,6 @@ Accept: application/json
 EOS;
         // .http str
         $this->assertEquals($expectedStr, $this->acceptor->str);
-
     }
 
     public function json($method, $uri, array $data = [], array $headers = [])
