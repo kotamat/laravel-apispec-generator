@@ -2,7 +2,7 @@
 
 namespace Test\ApiSpec;
 
-use ApiSpec\ApiSpecObject;
+use ApiSpec\ToHTTP;
 use Illuminate\Testing\TestResponse;
 use Illuminate\Http\Response;
 use PHPUnit\Framework\TestCase;
@@ -14,7 +14,7 @@ class ApiSpecObjectTest extends TestCase
      */
     public function TestGenerateContent_GET()
     {
-        $content = (new ApiSpecObject())->setMethod('GET')
+        $content = (new ToHTTP())->setMethod('GET')
             ->setUri('http://hoge.com/user/1')
             ->setResponse(new TestResponse(new Response(['name' => 'huga'])))
             ->generateContent();
@@ -36,7 +36,7 @@ EOS;
      */
     public function TestGenerateContent_WithData()
     {
-        $content = (new ApiSpecObject())->setMethod('POST')
+        $content = (new ToHTTP())->setMethod('POST')
             ->setUri('http://hoge.com/user/')
             ->setData(['name' => 'hoge'])
             ->setHeaders(['Accept' => 'application/json'])
