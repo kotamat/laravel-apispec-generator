@@ -90,9 +90,9 @@ class ToOAS extends AbstractBuilder
                         "summary" => $path,
                         "description" => $path,
                         "operationId" => $path,
-                        "security" => $this->authenticatedUser ? [
+                        "security" => $this->authenticatedUser ? [[
                             "bearerAuth" => []
-                        ]: [],
+                        ]]: [],
                         "responses" => [
                             200 => [
                                 "description" => "",
@@ -121,7 +121,7 @@ class ToOAS extends AbstractBuilder
                 "securitySchemes" => [
                     "bearerAuth" => [
                         "type" => "http",
-                        "schema" => "bearer",
+                        "scheme" => "bearer",
                         "bearerFormat" => "JWT"
                     ]
                 ]

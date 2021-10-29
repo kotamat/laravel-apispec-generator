@@ -88,26 +88,11 @@ EOS;
                 "summary": "\/user\/",
                 "description": "\/user\/",
                 "operationId": "\/user\/",
-                "security": {
-                    "bearerAuth": []
-                },
-                "requestBody": {
-                    "content": {
-                        "application\/json": {
-                            "schema": {
-                                "required": [
-                                    "name"
-                                ],
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "example": "hoge"
-                                    }
-                                }
-                            }
-                        }
+                "security": [
+                    {
+                        "bearerAuth": []
                     }
-                },
+                ],
                 "responses": {
                     "200": {
                         "description": "",
@@ -127,6 +112,23 @@ EOS;
                             }
                         }
                     }
+                },
+                "requestBody": {
+                    "content": {
+                        "application\/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "hoge"
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -135,7 +137,7 @@ EOS;
         "securitySchemes": {
             "bearerAuth": {
                 "type": "http",
-                "schema": "bearer",
+                "scheme": "bearer",
                 "bearerFormat": "JWT"
             }
         }
@@ -143,6 +145,7 @@ EOS;
 }
 EOS;
 
-        $this->assertEquals(json_decode($expected), json_decode($content));
+//        $this->assertEquals(json_decode($expected), json_decode($content));
+        $this->assertEquals($expected, $content);
     }
 }
