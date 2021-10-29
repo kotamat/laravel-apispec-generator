@@ -54,4 +54,9 @@ class ToHTTP extends AbstractBuilder
 
         return $content;
     }
+
+    public function aggregate(): void
+    {
+        // TODO: Implement aggregate() method.
+    }
 }

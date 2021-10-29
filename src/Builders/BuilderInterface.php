@@ -13,6 +13,7 @@ interface BuilderInterface
 
     public function saveOutput(string $filename, string $content);
 
+    public function aggregate(): void;
     //////////////////////
     // setters
     //////////////////////

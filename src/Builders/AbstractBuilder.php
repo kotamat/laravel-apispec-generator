@@ -14,10 +14,24 @@ abstract class AbstractBuilder implements BuilderInterface
     protected array $data = [];
     protected $authenticatedUser = null;
     protected Application $app;
+
     public function saveOutput(string $filename, string $content)
     {
         $this->app['filesystem']->drive('local')->put($filename, $content);
     }
+
+    public function loadOutputs(string $dir, string $pattern)
+    {
+        $allFiles = $this->app['filesystem']->drive('local')->allFiles($dir);
+        $contents = [];
+        foreach ($allFiles as $file) {
+            if (preg_match($pattern, $file)) {
+                $contents[] = $this->app['filesystem']->drive('local')->get($file);
+            }
+        }
+        return $contents;
+    }
+
     //////////////////////
     // setters
     //////////////////////

@@ -82,7 +82,7 @@ class ToOAS extends AbstractBuilder
             'openapi' => '3.0.0',
             'info' => [
                 'title' => "auto generated spec",
-                'version' => "0.0.0"
+                'version' => "0.0.0",
             ],
             'paths' => [
                 $path => [
@@ -90,30 +90,30 @@ class ToOAS extends AbstractBuilder
                         "summary" => $path,
                         "description" => $path,
                         "operationId" => $path,
-                        "security" => $this->authenticatedUser ? [[
-                            "bearerAuth" => []
-                        ]]: [],
+                        "security" => $this->authenticatedUser ? [
+                            "bearerAuth" => [],
+                        ] : [],
                         "responses" => [
                             200 => [
                                 "description" => "",
                                 "content" => [
                                     "application/json" => [
                                         "schema" => $this->buildSwaggerObject($this->response->json()),
-                                    ]
-                                ]
+                                    ],
+                                ],
                             ],
                         ],
                     ],
                 ],
             ],
         ];
-        if($this->data) {
+        if ($this->data) {
             $content['paths'][$path][strtolower($this->method)]['requestBody'] = [
                 "content" => [
                     "application/json" => [
                         "schema" => $this->buildSwaggerObject($this->data),
-                    ]
-                ]
+                    ],
+                ],
             ];
         }
         if ($this->authenticatedUser) {
@@ -121,13 +121,45 @@ class ToOAS extends AbstractBuilder
                 "securitySchemes" => [
                     "bearerAuth" => [
                         "type" => "http",
-                        "scheme" => "bearer",
-                        "bearerFormat" => "JWT"
-                    ]
-                ]
+                        "schema" => "bearer",
+                        "bearerFormat" => "JWT",
+                    ],
+                ],
             ];
         }
 
         return json_encode($content, JSON_PRETTY_PRINT);
+    }
+
+    public function aggregate(): void
+    {
+        $contents = $this->loadOutputs('api', '/.*\.json/');
+
+        $aggregated = $this->aggregateContent($contents);
+        $this->saveOutput('all.json', $aggregated);
+    }
+
+    /**
+     * @param array $contents
+     * @return array|mixed
+     */
+    public function aggregateContent(array $contents): string
+    {
+        $aggregated = [];
+        foreach ($contents as $contentStr) {
+            $content = json_decode($contentStr, true);
+            if (empty($aggregated)) {
+                $aggregated = $content;
+            } else {
+                $path = array_key_first($content['paths']);
+                if (empty($aggregated['paths'][$path])) {
+                    $aggregated['paths'][$path] = $content['paths'][$path];
+                } else {
+                    $method = array_key_first($content['paths'][$path]);
+                    $aggregated['paths'][$path][$method] = $content['paths'][$path][$method];
+                }
+            }
+        }
+        return json_encode($aggregated);
     }
 }

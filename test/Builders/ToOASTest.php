@@ -148,4 +148,156 @@ EOS;
 //        $this->assertEquals(json_decode($expected), json_decode($content));
         $this->assertEquals($expected, $content);
     }
+
+    public function testAggregateContent()
+    {
+        $builder = new ToOAS();
+        $contents = [
+            <<< EOS
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "auto generated spec",
+        "version": "0.0.0"
+    },
+    "paths": {
+        "\/user\/1": {
+            "get": {
+                "summary": "\/user\/1",
+                "description": "\/user\/1",
+                "operationId": "\/user\/1",
+                "security": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "required": [
+                                        "name"
+                                    ],
+                                    "properties": {
+                                        "name": {
+                                            "type": "string",
+                                            "example": "huga"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+EOS ,
+            <<< EOS
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "auto generated spec",
+        "version": "0.0.0"
+    },
+    "paths": {
+        "\/user\/1": {
+            "post": {
+                "summary": "\/user\/1",
+                "description": "\/user\/1",
+                "operationId": "\/user\/1",
+                "security": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "required": [
+                                        "name"
+                                    ],
+                                    "properties": {
+                                        "name": {
+                                            "type": "string",
+                                            "example": "huga"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+EOS
+        ];
+
+        $expected = <<< EOS
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "auto generated spec",
+        "version": "0.0.0"
+    },
+    "paths": {
+        "\/user\/1": {
+            "get": {
+                "summary": "\/user\/1",
+                "description": "\/user\/1",
+                "operationId": "\/user\/1",
+                "security": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "required": [
+                                        "name"
+                                    ],
+                                    "properties": {
+                                        "name": {
+                                            "type": "string",
+                                            "example": "huga"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "\/user\/1",
+                "description": "\/user\/1",
+                "operationId": "\/user\/1",
+                "security": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "required": [
+                                        "name"
+                                    ],
+                                    "properties": {
+                                        "name": {
+                                            "type": "string",
+                                            "example": "huga"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+EOS;
+        $this->assertEquals(json_decode($expected), json_decode($builder->aggregateContent($contents)));
+    }
 }
