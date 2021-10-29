@@ -1,12 +1,13 @@
 <?php
 
-namespace Test\ApiSpec;
+namespace Test\ApiSpec\Builders;
 
 use ApiSpec\Builders\ToOAS;
 use Illuminate\Routing\Route;
 use Illuminate\Testing\TestResponse;
 use Illuminate\Http\Response;
 use PHPUnit\Framework\TestCase;
+use Test\ApiSpec\MockUser;
 
 class ToOASTest extends TestCase
 {
@@ -33,7 +34,7 @@ class ToOASTest extends TestCase
             "get": {
                 "summary": "\/user\/1",
                 "description": "\/user\/1",
-                "operationId": "\/user\/1",
+                "operationId": "\/user\/1:GET",
                 "security": [],
                 "responses": {
                     "200": {
@@ -90,7 +91,7 @@ EOS;
             "post": {
                 "summary": "\/user",
                 "description": "\/user",
-                "operationId": "\/user",
+                "operationId": "\/user:POST",
                 "security": [
                     {
                         "bearerAuth": []
@@ -148,8 +149,7 @@ EOS;
 }
 EOS;
 
-//        $this->assertEquals(json_decode($expected), json_decode($content));
-        $this->assertEquals($expected, $content);
+        $this->assertEquals(json_decode($expected), json_decode($content));
     }
 
     public function testAggregateContent()

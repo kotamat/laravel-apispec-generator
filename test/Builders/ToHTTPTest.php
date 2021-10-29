@@ -1,11 +1,12 @@
 <?php
 
-namespace Test\ApiSpec;
+namespace Test\ApiSpec\Builders;
 
 use ApiSpec\Builders\ToHTTP;
 use Illuminate\Testing\TestResponse;
 use Illuminate\Http\Response;
 use PHPUnit\Framework\TestCase;
+use Test\ApiSpec\MockUser;
 
 class ToHTTPTest extends TestCase
 {

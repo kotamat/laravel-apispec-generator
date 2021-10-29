@@ -2,11 +2,17 @@
 
 namespace ApiSpec\Builders;
 
+use Illuminate\Database\Eloquent\Model;
+
 class ToOAS extends AbstractBuilder
 {
     public function output()
     {
-        $content = $this->generateContent();
+        try {
+            $content = $this->generateContent();
+        } catch (\Throwable $exception) {
+            return;
+        }
 
         $path = $this->route->uri;
         $this->saveOutput($path . '/' . $this->method . '.json', $content);
@@ -28,11 +34,19 @@ class ToOAS extends AbstractBuilder
 
     public function buildSwaggerObject(array $data)
     {
-        $keys = array_keys($data);
+        if ($this->getType($data) === "array") {
+            return [
+                'type' => 'array',
+                'items' => $this->buildSwaggerObject($data[0]),
+            ];
+        }
+        $keys = array_values(array_filter(array_keys($data), fn($a) => is_string($a)));
         $op = [
-            'required' => $keys,
             'properties' => [],
         ];
+        if (count($keys) > 0) {
+            $op['required'] = $keys;
+        }
         foreach ($data as $k => $d) {
             $type = $this->getType($d);
             if (!in_array($type, ["array", "object", "NULL"])) {
@@ -43,7 +57,7 @@ class ToOAS extends AbstractBuilder
             } else {
                 switch ($type) {
                     case "array":
-                        $childType = $this->getType($d[0]);
+                        $childType = $this->getType($d[0] ?? "");
                         if ($childType === 'object') {
                             $op['properties'][$k] = [
                                 'type' => 'array',
@@ -89,24 +103,51 @@ class ToOAS extends AbstractBuilder
                     strtolower($this->method) => [
                         "summary" => $path,
                         "description" => $path,
-                        "operationId" => $path,
-                        "security" => $this->authenticatedUser ? [[
-                            "bearerAuth" => [],
-                        ]] : [],
+                        "operationId" => "$path:$this->method",
+                        "security" => $this->authenticatedUser ? [
+                            [
+                                "bearerAuth" => [],
+                            ],
+                        ] : [],
                         "responses" => [
                             200 => [
                                 "description" => "",
-                                "content" => [
-                                    "application/json" => [
-                                        "schema" => $this->buildSwaggerObject($this->response->json()),
-                                    ],
-                                ],
                             ],
                         ],
                     ],
                 ],
             ],
         ];
+        if ($this->route->parameters) {
+            foreach ($this->route->parameters as $key => $parameter) {
+                $param = $parameter;
+                if ($parameter instanceof Model) {
+                    $param = $parameter->getKey();
+                }
+                $content['paths'][$path][strtolower($this->method)]["parameters"] = [
+                    [
+                        "in" => "path",
+                        "name" => $key,
+                        "required" => true,
+                        "schema" => [
+                            "type" => $this->getType($param),
+                        ],
+                        "description" => "$param",
+                    ],
+                ];
+            }
+        }
+        if ($this->response->content() && !empty($this->response->json())) {
+            $response = $this->response->json();
+            if (is_array($response)) {
+                $response = $this->buildSwaggerObject($response);
+            }
+            $content['paths'][$path][strtolower($this->method)]['responses'][200]["content"] = [
+                "application/json" => [
+                    "schema" => $response,
+                ],
+            ];
+        }
         if ($this->data) {
             $content['paths'][$path][strtolower($this->method)]['requestBody'] = [
                 "content" => [
@@ -141,6 +182,7 @@ class ToOAS extends AbstractBuilder
 
     /**
      * @param array $contents
+     *
      * @return array|mixed
      */
     public function aggregateContent(array $contents): string
@@ -158,8 +200,12 @@ class ToOAS extends AbstractBuilder
                     $method = array_key_first($content['paths'][$path]);
                     $aggregated['paths'][$path][$method] = $content['paths'][$path][$method];
                 }
+                if (empty($aggregated['components']) && !empty($content['components'])) {
+                    $aggregated['components'] = $content['components'] ?? [];
+                }
             }
         }
+
         return json_encode($aggregated);
     }
 }
