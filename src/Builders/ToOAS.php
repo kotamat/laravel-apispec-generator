@@ -2,7 +2,7 @@
 
 namespace ApiSpec\Builders;
 
-class ToSwagger extends AbstractBuilder
+class ToOAS extends AbstractBuilder
 {
     public function output()
     {
@@ -79,7 +79,7 @@ class ToSwagger extends AbstractBuilder
     {
         $path = preg_replace('/https?:\/\/[0-9\.:a-zA-Z]+\//', '/', $this->uri);
         $content = [
-            'swagger' => '2.0',
+            'openapi' => '3.0.0',
             'info' => [
                 'title' => "auto generated spec",
                 'version' => "0.0.0"
@@ -90,27 +90,43 @@ class ToSwagger extends AbstractBuilder
                         "summary" => $path,
                         "description" => $path,
                         "operationId" => $path,
-                        "consumes" => [
-                            "application/json",
-                        ],
-                        "parameters" => $this->data ? [[
-                            "in" => "body",
-                            "name" => "body",
-                            "required" => true,
-                            "schema" => $this->buildSwaggerObject($this->data),
-                        ]] : [],
-                        "produces" => [
-                            "application/json",
-                        ],
+                        "security" => $this->authenticatedUser ? [
+                            "bearerAuth" => []
+                        ]: [],
                         "responses" => [
                             200 => [
-                                "schema" => $this->buildSwaggerObject($this->response->json()),
+                                "description" => "",
+                                "content" => [
+                                    "application/json" => [
+                                        "schema" => $this->buildSwaggerObject($this->response->json()),
+                                    ]
+                                ]
                             ],
                         ],
                     ],
                 ],
             ],
         ];
+        if($this->data) {
+            $content['paths'][$path][strtolower($this->method)]['requestBody'] = [
+                "content" => [
+                    "application/json" => [
+                        "schema" => $this->buildSwaggerObject($this->data),
+                    ]
+                ]
+            ];
+        }
+        if ($this->authenticatedUser) {
+            $content['components'] = [
+                "securitySchemes" => [
+                    "bearerAuth" => [
+                        "type" => "http",
+                        "schema" => "bearer",
+                        "bearerFormat" => "JWT"
+                    ]
+                ]
+            ];
+        }
 
         return json_encode($content, JSON_PRETTY_PRINT);
     }

@@ -11,7 +11,7 @@ use Illuminate\Testing\TestResponse;
  */
 trait ApiSpecOutput
 {
-    protected BuilderInterface|null $builder = null;
+    protected bool $isExportSpec = false;
     protected $__authenticatedUser = null;
 
     /**
@@ -50,14 +50,19 @@ trait ApiSpecOutput
         string $method
     )
     {
-        $this->builder?->setApp($this->app)
-            ->setMethod($method)
-            ->setUri($uri)
-            ->setData($data)
-            ->setHeaders(['Content-Type' => 'application/json', 'Accept' => 'application/json'])
-            ->setHeaders($headers)
-            ->setResponse($response)
-            ->setAuthenticatedUser($this->__authenticatedUser)
-            ->output();
+        if($this->isExportSpec) {
+            /** @var BuilderInterface $builder */
+            $builder = $this->app->make(BuilderInterface::class);
+            $builder?->setApp($this->app)
+                ->setMethod($method)
+                ->setUri($uri)
+                ->setData($data)
+                ->setHeaders(['Content-Type' => 'application/json', 'Accept' => 'application/json'])
+                ->setHeaders($headers)
+                ->setResponse($response)
+                ->setAuthenticatedUser($this->__authenticatedUser)
+                ->output();
+
+        }
     }
 }

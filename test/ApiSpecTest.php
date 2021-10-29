@@ -2,7 +2,7 @@
 
 namespace Test\ApiSpec;
 
-use ApiSpec\ToHTTP;
+use ApiSpec\Builders\ToHTTP;
 use Illuminate\Testing\TestResponse;
 use Illuminate\Http\Response;
 use PHPUnit\Framework\TestCase;

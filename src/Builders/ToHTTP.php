@@ -1,6 +1,6 @@
 <?php
 
-namespace ApiSpec;
+namespace ApiSpec\Builders;
 
 use ApiSpec\Builders\AbstractBuilder;
 use Illuminate\Contracts\Auth\Authenticatable as UserContract;

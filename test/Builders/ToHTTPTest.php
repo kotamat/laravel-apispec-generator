@@ -2,12 +2,12 @@
 
 namespace Test\ApiSpec;
 
-use ApiSpec\ToHTTP;
+use ApiSpec\Builders\ToHTTP;
 use Illuminate\Testing\TestResponse;
 use Illuminate\Http\Response;
 use PHPUnit\Framework\TestCase;
 
-class ApiSpecObjectTest extends TestCase
+class ToHTTPTest extends TestCase
 {
     /**
      * @test
