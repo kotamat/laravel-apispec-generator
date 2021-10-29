@@ -3,12 +3,14 @@
 namespace ApiSpec\Builders;
 
 use Illuminate\Foundation\Application;
+use Illuminate\Routing\Route;
 use Illuminate\Testing\TestResponse;
 
 abstract class AbstractBuilder implements BuilderInterface
 {
     protected string $method = "";
     protected string $uri = "";
+    protected Route $route;
     protected array $headers = [];
     protected TestResponse $response;
     protected array $data = [];
@@ -60,6 +62,18 @@ abstract class AbstractBuilder implements BuilderInterface
     }
 
     /**
+     * @param Route $route
+     *
+     * @return BuilderInterface
+     */
+    public function setRoute(Route $route): BuilderInterface
+    {
+        $this->route=$route;
+
+        return $this;
+    }
+
+    /**
      * @param array $headers
      *
      * @return BuilderInterface
@@ -102,7 +116,7 @@ abstract class AbstractBuilder implements BuilderInterface
         return $this;
     }
 
-    public function setApp(Application $app)
+    public function setApp(Application $app): BuilderInterface
     {
         $this->app = $app;
 

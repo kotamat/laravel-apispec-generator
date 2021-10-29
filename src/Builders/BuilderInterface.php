@@ -3,6 +3,7 @@
 namespace ApiSpec\Builders;
 
 use Illuminate\Foundation\Application;
+use Illuminate\Routing\Route;
 use Illuminate\Testing\TestResponse;
 
 interface BuilderInterface
@@ -32,6 +33,12 @@ interface BuilderInterface
      */
     public function setUri(string $uri): BuilderInterface;
 
+    /**
+     * @param Route $route
+     *
+     * @return BuilderInterface
+     */
+    public function setRoute(Route $route): BuilderInterface;
 
     /**
      * @param array $headers
@@ -60,6 +67,6 @@ interface BuilderInterface
     public function setAuthenticatedUser($authenticatedUser): BuilderInterface;
 
 
-    public function setApp(Application $app);
+    public function setApp(Application $app): BuilderInterface;
 
 }

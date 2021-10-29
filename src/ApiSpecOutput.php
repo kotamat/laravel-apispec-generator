@@ -4,6 +4,7 @@ namespace ApiSpec;
 
 use ApiSpec\Builders\BuilderInterface;
 use Illuminate\Contracts\Auth\Authenticatable as UserContract;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Testing\TestResponse;
 
 /**
@@ -27,7 +28,8 @@ trait ApiSpecOutput
     public function json($method, $uri, array $data = [], array $headers = [])
     {
         $res = parent::json(...func_get_args());
-        $this->outputSpec($uri, $data, $headers, $res, $method);
+        $route = Route::current();
+        $this->outputSpec($uri, $route, $data, $headers, $res, $method);
 
         return $res;
     }
@@ -36,6 +38,7 @@ trait ApiSpecOutput
      * output spec file.
      *
      * @param string $uri request uri
+     * @param \Illuminate\Routing\Route|null $route request route
      * @param array $data request body
      * @param array $headers request headers
      * @param TestResponse $response response object
@@ -44,6 +47,7 @@ trait ApiSpecOutput
      */
     protected function outputSpec(
         $uri,
+        $route,
         array $data = [],
         array $headers = [],
         TestResponse $response,
@@ -56,6 +60,7 @@ trait ApiSpecOutput
             $builder?->setApp($this->app)
                 ->setMethod($method)
                 ->setUri($uri)
+                ->setRoute($route)
                 ->setData($data)
                 ->setHeaders(['Content-Type' => 'application/json', 'Accept' => 'application/json'])
                 ->setHeaders($headers)

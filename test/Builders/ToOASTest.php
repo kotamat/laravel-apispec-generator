@@ -3,6 +3,7 @@
 namespace Test\ApiSpec;
 
 use ApiSpec\Builders\ToOAS;
+use Illuminate\Routing\Route;
 use Illuminate\Testing\TestResponse;
 use Illuminate\Http\Response;
 use PHPUnit\Framework\TestCase;
@@ -14,8 +15,9 @@ class ToOASTest extends TestCase
      */
     public function TestGenerateContent_GET()
     {
+        $route = new Route("GET", "/user/1",[]);
         $content = (new ToOAS())->setMethod('GET')
-            ->setUri('http://hoge.com/user/1')
+            ->setRoute($route)
             ->setResponse(new TestResponse(new Response(['name' => 'huga'])))
             ->generateContent();
 
@@ -67,8 +69,9 @@ EOS;
      */
     public function TestGenerateContent_WithData()
     {
+        $route = new Route("POST","/user/",[]);
         $content = (new ToOAS())->setMethod('POST')
-            ->setUri('http://hoge.com/user/')
+            ->setRoute($route)
             ->setData(['name' => 'hoge'])
             ->setHeaders(['Accept' => 'application/json'])
             ->setResponse(new TestResponse(new Response(['name' => 'huga'])))
@@ -83,11 +86,11 @@ EOS;
         "version": "0.0.0"
     },
     "paths": {
-        "\/user\/": {
+        "\/user": {
             "post": {
-                "summary": "\/user\/",
-                "description": "\/user\/",
-                "operationId": "\/user\/",
+                "summary": "\/user",
+                "description": "\/user",
+                "operationId": "\/user",
                 "security": [
                     {
                         "bearerAuth": []

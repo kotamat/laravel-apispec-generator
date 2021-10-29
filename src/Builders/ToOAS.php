@@ -8,7 +8,7 @@ class ToOAS extends AbstractBuilder
     {
         $content = $this->generateContent();
 
-        $path = preg_replace('/https?:\/\/[0-9\.:a-zA-Z]+\//', '', $this->uri);
+        $path = $this->route->uri;
         $this->saveOutput($path . '/' . $this->method . '.json', $content);
     }
 
@@ -77,7 +77,7 @@ class ToOAS extends AbstractBuilder
 
     public function generateContent()
     {
-        $path = preg_replace('/https?:\/\/[0-9\.:a-zA-Z]+\//', '/', $this->uri);
+        $path = "/" . $this->route->uri;
         $content = [
             'openapi' => '3.0.0',
             'info' => [
@@ -92,7 +92,7 @@ class ToOAS extends AbstractBuilder
                         "operationId" => $path,
                         "security" => $this->authenticatedUser ? [[
                             "bearerAuth" => [],
-                        ]]: [],
+                        ]] : [],
                         "responses" => [
                             200 => [
                                 "description" => "",
