@@ -17,7 +17,7 @@ trait ApiSpecOutput
 
     /**
      * @param UserContract $user
-     * @param null $driver
+     * @param null         $driver
      */
     public function be(UserContract $user, $driver = null)
     {
@@ -27,7 +27,7 @@ trait ApiSpecOutput
 
     public function json($method, $uri, array $data = [], array $headers = [])
     {
-        $res = parent::json(...func_get_args());
+        $res   = parent::json(...func_get_args());
         $route = Route::current();
         $this->outputSpec($uri, $route, $data, $headers, $res, $method);
 
@@ -37,12 +37,13 @@ trait ApiSpecOutput
     /**
      * output spec file.
      *
-     * @param string $uri request uri
-     * @param \Illuminate\Routing\Route|null $route request route
-     * @param array $data request body
-     * @param array $headers request headers
-     * @param TestResponse $response response object
-     * @param string $method method name
+     * @param string                         $uri      request uri
+     * @param \Illuminate\Routing\Route|null $route    request route
+     * @param array                          $data     request body
+     * @param array                          $headers  request headers
+     * @param TestResponse                   $response response object
+     * @param string                         $method   method name
+     *
      * @return void
      */
     protected function outputSpec(
@@ -52,22 +53,20 @@ trait ApiSpecOutput
         array $headers = [],
         TestResponse $response,
         string $method
-    )
-    {
-        if($this->isExportSpec) {
+    ) {
+        if ($this->isExportSpec) {
             /** @var BuilderInterface $builder */
             $builder = $this->app->make(BuilderInterface::class);
             $builder?->setApp($this->app)
-                ->setMethod($method)
-                ->setUri($uri)
-                ->setRoute($route)
-                ->setData($data)
-                ->setHeaders(['Content-Type' => 'application/json', 'Accept' => 'application/json'])
-                ->setHeaders($headers)
-                ->setResponse($response)
-                ->setAuthenticatedUser($this->__authenticatedUser)
-                ->output();
-
+                     ->setMethod($method)
+                     ->setUri($uri)
+                     ->setRoute($route)
+                     ->setData($data)
+                     ->setHeaders(['Content-Type' => 'application/json', 'Accept' => 'application/json'])
+                     ->setHeaders($headers)
+                     ->setResponse($response)
+                     ->setAuthenticatedUser($this->__authenticatedUser)
+                     ->output();
         }
     }
 }

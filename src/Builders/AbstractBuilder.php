@@ -22,7 +22,7 @@ abstract class AbstractBuilder implements BuilderInterface
         $this->app['filesystem']->drive('local')->put($filename, $content);
     }
 
-    public function loadOutputs(string $dir, string $pattern)
+    public function loadOutputs(string $dir, string $pattern): array
     {
         $allFiles = $this->app['filesystem']->drive('local')->allFiles($dir);
         $contents = [];

@@ -1,12 +1,14 @@
 <?php
+declare(strict_types=1);
 
 namespace ApiSpec\Builders;
 
 use Illuminate\Database\Eloquent\Model;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
 class ToOAS extends AbstractBuilder
 {
-    public function output()
+    public function output(): void
     {
         try {
             $content = $this->generateContent();
@@ -32,16 +34,16 @@ class ToOAS extends AbstractBuilder
         return $type;
     }
 
-    public function buildSwaggerObject(array $data)
+    public function buildSwaggerObject(array $data): array
     {
         if ($this->getType($data) === "array") {
             return [
-                'type' => 'array',
+                'type'  => 'array',
                 'items' => $this->buildSwaggerObject($data[0]),
             ];
         }
         $keys = array_values(array_filter(array_keys($data), fn($a) => is_string($a)));
-        $op = [
+        $op   = [
             'properties' => [],
         ];
         if (count($keys) > 0) {
@@ -51,7 +53,7 @@ class ToOAS extends AbstractBuilder
             $type = $this->getType($d);
             if (!in_array($type, ["array", "object", "NULL"])) {
                 $op['properties'][$k] = [
-                    "type" => $type,
+                    "type"    => $type,
                     "example" => $d,
                 ];
             } else {
@@ -60,24 +62,24 @@ class ToOAS extends AbstractBuilder
                         $childType = $this->getType($d[0] ?? "");
                         if ($childType === 'object') {
                             $op['properties'][$k] = [
-                                'type' => 'array',
+                                'type'  => 'array',
                                 'items' => [
-                                    'type' => $childType,
+                                    'type'       => $childType,
                                     'properties' => $this->buildSwaggerObject($d[0])['properties'],
                                 ],
                             ];
                             break;
                         }
                         $op['properties'][$k] = [
-                            'type' => 'array',
-                            'items' => [
+                            'type'    => 'array',
+                            'items'   => [
                                 'type' => $childType,
                             ],
                             'example' => $d,
                         ];
                         break;
                     case 'object' :
-                        $op['properties'][$k] = $this->buildSwaggerObject($d);
+                        $op['properties'][$k]         = $this->buildSwaggerObject($d);
                         $op['properties'][$k]['type'] = 'object';
                         break;
                     default:
@@ -89,27 +91,28 @@ class ToOAS extends AbstractBuilder
         return $op;
     }
 
-    public function generateContent()
+    public function generateContent(): string
     {
-        $path = "/" . $this->route->uri;
-        $content = [
+        $symfonyRequest = SymfonyRequest::create($this->uri);
+        $path           = "/" . $this->route->uri;
+        $content        = [
             'openapi' => '3.0.0',
-            'info' => [
-                'title' => "auto generated spec",
+            'info'    => [
+                'title'   => "auto generated spec",
                 'version' => "0.0.0",
             ],
-            'paths' => [
+            'paths'   => [
                 $path => [
                     strtolower($this->method) => [
-                        "summary" => $path,
+                        "summary"     => $path,
                         "description" => $path,
                         "operationId" => "$path:$this->method",
-                        "security" => $this->authenticatedUser ? [
+                        "security"    => $this->authenticatedUser ? [
                             [
                                 "bearerAuth" => [],
                             ],
                         ] : [],
-                        "responses" => [
+                        "responses"   => [
                             200 => [
                                 "description" => "",
                             ],
@@ -118,22 +121,53 @@ class ToOAS extends AbstractBuilder
                 ],
             ],
         ];
+        if (!empty($symfonyRequest->query->all())) {
+            if (empty($content['paths'][$path][strtolower($this->method)]["parameters"])) {
+                $content['paths'][$path][strtolower($this->method)]["parameters"] = [];
+            }
+            foreach ($symfonyRequest->query->all() as $key => $value) {
+                $content['paths'][$path][strtolower($this->method)]["parameters"][] = [
+                    "in"          => "query",
+                    "name"        => $key,
+                    "schema"      => [
+                        "type" => $this->getType($value),
+                    ],
+                    "description" => "$value",
+                ];
+            }
+        }
+        if ($this->headers) {
+            if (empty($content['paths'][$path][strtolower($this->method)]["parameters"])) {
+                $content['paths'][$path][strtolower($this->method)]["parameters"] = [];
+            }
+            foreach ($this->headers as $key => $value) {
+                $content['paths'][$path][strtolower($this->method)]["parameters"][] = [
+                    "in"          => "header",
+                    "name"        => $key,
+                    "schema"      => [
+                        "type" => $this->getType($value),
+                    ],
+                    "description" => "$value",
+                ];
+            }
+        }
         if ($this->route->parameters) {
+            if (empty($content['paths'][$path][strtolower($this->method)]["parameters"])) {
+                $content['paths'][$path][strtolower($this->method)]["parameters"] = [];
+            }
             foreach ($this->route->parameters as $key => $parameter) {
                 $param = $parameter;
                 if ($parameter instanceof Model) {
                     $param = $parameter->getKey();
                 }
-                $content['paths'][$path][strtolower($this->method)]["parameters"] = [
-                    [
-                        "in" => "path",
-                        "name" => $key,
-                        "required" => true,
-                        "schema" => [
-                            "type" => $this->getType($param),
-                        ],
-                        "description" => "$param",
+                $content['paths'][$path][strtolower($this->method)]["parameters"][] = [
+                    "in"          => "path",
+                    "name"        => $key,
+                    "required"    => true,
+                    "schema"      => [
+                        "type" => $this->getType($param),
                     ],
+                    "description" => "$param",
                 ];
             }
         }
@@ -161,8 +195,8 @@ class ToOAS extends AbstractBuilder
             $content['components'] = [
                 "securitySchemes" => [
                     "bearerAuth" => [
-                        "type" => "http",
-                        "scheme" => "bearer",
+                        "type"         => "http",
+                        "scheme"       => "bearer",
                         "bearerFormat" => "JWT",
                     ],
                 ],
@@ -183,7 +217,7 @@ class ToOAS extends AbstractBuilder
     /**
      * @param array $contents
      *
-     * @return array|mixed
+     * @return string
      */
     public function aggregateContent(array $contents): string
     {
@@ -197,7 +231,7 @@ class ToOAS extends AbstractBuilder
                 if (empty($aggregated['paths'][$path])) {
                     $aggregated['paths'][$path] = $content['paths'][$path];
                 } else {
-                    $method = array_key_first($content['paths'][$path]);
+                    $method                              = array_key_first($content['paths'][$path]);
                     $aggregated['paths'][$path][$method] = $content['paths'][$path][$method];
                 }
                 if (empty($aggregated['components']) && !empty($content['components'])) {

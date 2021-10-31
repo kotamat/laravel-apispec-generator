@@ -9,7 +9,7 @@ use Illuminate\Testing\TestResponse;
 
 class ToHTTP extends AbstractBuilder
 {
-    public function output()
+    public function output(): void
     {
         $content = $this->generateContent();
 
@@ -17,7 +17,7 @@ class ToHTTP extends AbstractBuilder
         $this->saveOutput($path . '/' . $this->method . '.http', $content);
     }
 
-    public function generateContent()
+    public function generateContent(): string
     {
         // Uri
         $content = "$this->method $this->uri" . PHP_EOL;

@@ -8,15 +8,36 @@ use Illuminate\Testing\TestResponse;
 
 interface BuilderInterface
 {
-    public function output();
+    /**
+     * procedure output apispec, after setup
+     * @return void
+     */
+    public function output(): void;
 
-    public function generateContent();
+    /**
+     * generate apispec content
+     *
+     * @return string
+     */
+    public function generateContent(): string;
 
+    /**
+     * save content to filename
+     *
+     * @param string $filename
+     * @param string $content
+     *
+     * @return void
+     */
     public function saveOutput(string $filename, string $content);
 
+    /**
+     * aggregate and save all output contents
+     */
     public function aggregate(): void;
+
     //////////////////////
-    // setters
+    // setup methods
     //////////////////////
     /**
      * @param string $method
@@ -64,9 +85,19 @@ interface BuilderInterface
     public function setData(array $data): BuilderInterface;
 
 
+    /**
+     * @param $authenticatedUser
+     *
+     * @return BuilderInterface
+     */
     public function setAuthenticatedUser($authenticatedUser): BuilderInterface;
 
 
+    /**
+     * @param \Illuminate\Foundation\Application $app
+     *
+     * @return BuilderInterface
+     */
     public function setApp(Application $app): BuilderInterface;
 
 }
