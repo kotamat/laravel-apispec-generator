@@ -12,7 +12,6 @@ use Illuminate\Testing\TestResponse;
  */
 trait ApiSpecOutput
 {
-    protected bool $isExportSpec = false;
     protected UserContract|null $__authenticatedUser = null;
 
     /**
@@ -45,7 +44,6 @@ trait ApiSpecOutput
      * @param array                          $headers  request headers
      *
      * @return void
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     protected function outputSpec(
         string $uri,
