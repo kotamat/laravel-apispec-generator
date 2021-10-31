@@ -11,26 +11,10 @@ interface BuilderInterface
 {
     /**
      * procedure output apispec, after setup
+     *
      * @return void
      */
     public function output(): void;
-
-    /**
-     * generate apispec content
-     *
-     * @return string
-     */
-    public function generateContent(): string;
-
-    /**
-     * save content to filename
-     *
-     * @param string $filename
-     * @param string $content
-     *
-     * @return void
-     */
-    public function saveOutput(string $filename, string $content);
 
     /**
      * aggregate and save all output contents

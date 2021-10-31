@@ -5,6 +5,7 @@ namespace ApiSpec;
 
 
 use ApiSpec\Builders\BuilderInterface;
+use ApiSpec\Commands\AggregateCommand;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 
@@ -27,5 +28,10 @@ class ApiSpecServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/config/apispec.php' => config_path('apispec.php'),
         ]);
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                AggregateCommand::class,
+            ]);
+        }
     }
 }

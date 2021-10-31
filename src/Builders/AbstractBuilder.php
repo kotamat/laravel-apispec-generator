@@ -18,7 +18,7 @@ abstract class AbstractBuilder implements BuilderInterface
     protected $authenticatedUser = null;
     protected Application $app;
 
-    public function saveOutput(string $filename, string $content)
+    protected function saveOutput(string $filename, string $content)
     {
         $this->app['filesystem']->drive('local')->put($filename, $content);
     }
@@ -34,6 +34,13 @@ abstract class AbstractBuilder implements BuilderInterface
         }
         return $contents;
     }
+
+    /**
+     * generate apispec content
+     *
+     * @return string
+     */
+    abstract public function generateContent(): string;
 
     //////////////////////
     // setters
