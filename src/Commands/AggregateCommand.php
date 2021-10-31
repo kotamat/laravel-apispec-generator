@@ -48,6 +48,6 @@ class AggregateCommand extends Command
      */
     public function handle(): void
     {
-        $this->builder->aggregate();
+        $this->builder->setApp(app())->aggregate();
     }
 }
