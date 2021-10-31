@@ -13,7 +13,7 @@ use Illuminate\Testing\TestResponse;
 trait ApiSpecOutput
 {
     protected bool $isExportSpec = false;
-    protected $__authenticatedUser = null;
+    protected UserContract|null $__authenticatedUser = null;
 
     /**
      * @param UserContract $user
@@ -29,7 +29,7 @@ trait ApiSpecOutput
     {
         $res   = parent::json(...func_get_args());
         $route = Route::current();
-        $this->outputSpec($uri, $route, $data, $headers, $res, $method);
+        $this->outputSpec($uri, $route, $method, $res, $data, $headers);
 
         return $res;
     }
@@ -39,20 +39,21 @@ trait ApiSpecOutput
      *
      * @param string                         $uri      request uri
      * @param \Illuminate\Routing\Route|null $route    request route
+     * @param string                         $method   method name
+     * @param TestResponse                   $response response object
      * @param array                          $data     request body
      * @param array                          $headers  request headers
-     * @param TestResponse                   $response response object
-     * @param string                         $method   method name
      *
      * @return void
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     protected function outputSpec(
-        $uri,
-        $route,
+        string $uri,
+        ?\Illuminate\Routing\Route $route,
+        string $method,
+        TestResponse $response,
         array $data = [],
         array $headers = [],
-        TestResponse $response,
-        string $method
     ) {
         if ($this->app->make('config')->get('apispec.isExportSpec')) {
             /** @var BuilderInterface $builder */
