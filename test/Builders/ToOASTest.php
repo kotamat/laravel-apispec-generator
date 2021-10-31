@@ -118,6 +118,16 @@ EOS;
                         }
                     }
                 },
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "Accept",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "application\/json"
+                    }
+                ],
                 "requestBody": {
                     "content": {
                         "application\/json": {
