@@ -2,5 +2,6 @@
 declare(strict_types=1);
 
 return [
-    'builder' => \ApiSpec\Builders\ToOAS::class
+    'isExportSpec' => true,
+    'builder'      => \ApiSpec\Builders\ToOAS::class,
 ];

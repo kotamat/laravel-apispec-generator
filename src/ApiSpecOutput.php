@@ -54,7 +54,7 @@ trait ApiSpecOutput
         TestResponse $response,
         string $method
     ) {
-        if ($this->isExportSpec) {
+        if ($this->app->make('config')->get('apispec.isExportSpec')) {
             /** @var BuilderInterface $builder */
             $builder = $this->app->make(BuilderInterface::class);
             $builder?->setApp($this->app)
