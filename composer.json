@@ -15,6 +15,13 @@
             "Test\\ApiSpec\\": "test/"
         }
     },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "ApiSpec\\ApiSpecServiceProvider"
+            ]
+        }
+    },
     "require": {
         "laravel/framework": ">=7.0"
     },
