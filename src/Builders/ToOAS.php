@@ -55,7 +55,12 @@ class ToOAS extends AbstractBuilder
                     $op['required'] = $keys;
                 }
                 foreach ($data as $k => $d) {
-                    $op['properties'][$k] = $this->buildSwaggerObject($d);
+                    if ($this->getType($d) !== "NULL") {
+                        $op['properties'][$k] = $this->buildSwaggerObject($d);
+                    }
+                }
+                if (empty($op['properties'])) {
+                    $op['properties'] = new \stdClass();
                 }
 
                 return $op;
