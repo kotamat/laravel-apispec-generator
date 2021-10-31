@@ -1,0 +1,64 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "auto generated spec",
+        "version": "0.0.0"
+    },
+    "paths": {
+        "\/user\/1": {
+            "get": {
+                "summary": "\/user\/1",
+                "description": "\/user\/1",
+                "operationId": "\/user\/1:GET",
+                "security": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "name": {
+                                            "type": "string",
+                                            "example": "huga"
+                                        }
+                                    },
+                                    "required": [
+                                        "name"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "hoge",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "aaa"
+                    },
+                    {
+                        "in": "query",
+                        "name": "fuga",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "bbb"
+                    },
+                    {
+                        "in": "header",
+                        "name": "X-User-Id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "1"
+                    }
+                ]
+            }
+        }
+    }
+}
