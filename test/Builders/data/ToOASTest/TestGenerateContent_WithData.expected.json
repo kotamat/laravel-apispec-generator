@@ -21,6 +21,7 @@
                         "content": {
                             "application\/json": {
                                 "schema": {
+                                    "title": "/user_POST_response_200",
                                     "type": "object",
                                     "properties": {
                                         "name": {
@@ -50,6 +51,7 @@
                     "content": {
                         "application\/json": {
                             "schema": {
+                                "title": "/user_POST_request",
                                 "type": "object",
                                 "properties": {
                                     "name": {

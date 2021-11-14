@@ -17,6 +17,7 @@
                         "content": {
                             "application\/json": {
                                 "schema": {
+                                    "title": "/user/1_GET_response_200",
                                     "type": "object",
                                     "properties": {
                                         "name": {
