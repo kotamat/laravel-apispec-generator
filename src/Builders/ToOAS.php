@@ -157,6 +157,9 @@ class ToOAS extends AbstractBuilder
             if (is_array($response)) {
                 $response = $this->buildSwaggerObject($response);
             }
+
+            $response['title'] = $path . '_' . $this->method . '_response_' . $this->response->status();
+
             $content['paths'][$path][strtolower($this->method)]['responses'][$this->response->status()]["content"] = [
                 "application/json" => [
                     "schema" => $response,
@@ -164,10 +167,14 @@ class ToOAS extends AbstractBuilder
             ];
         }
         if ($this->data) {
+            $requestBody = $this->buildSwaggerObject($this->data);
+
+            $requestBody['title'] = $path . '_' . $this->method . '_request';
+
             $content['paths'][$path][strtolower($this->method)]['requestBody'] = [
                 "content" => [
                     "application/json" => [
-                        "schema" => $this->buildSwaggerObject($this->data),
+                        "schema" => $requestBody,
                     ],
                 ],
             ];
